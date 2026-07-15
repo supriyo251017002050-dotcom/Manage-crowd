@@ -2740,7 +2740,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const triggerThreatAlert = (threat) => {
-    const cooldownMs = 5000;
+    // Reduce cooldown to 1 second so it catches back-to-back weapons (e.g. testing phone then knife)
+    const cooldownMs = 1000;
     if (Date.now() - lastAlertTime < cooldownMs) {
       return;
     }
@@ -2761,8 +2762,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const video = document.getElementById('cctv-video');
     const canvas = document.getElementById('cctv-canvas');
     const thumbCanvas = document.createElement('canvas');
-    thumbCanvas.width = 160;
-    thumbCanvas.height = 120;
+    // Increase resolution to capture face and weapon clearly
+    thumbCanvas.width = 320;
+    thumbCanvas.height = 240;
     const thumbCtx = thumbCanvas.getContext('2d');
     
     thumbCtx.drawImage(video, 0, 0, thumbCanvas.width, thumbCanvas.height);
