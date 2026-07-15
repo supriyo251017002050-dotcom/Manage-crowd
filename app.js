@@ -2609,10 +2609,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Map various sharp/weapon-like COCO-SSD classes to threats
         if (p.class === 'knife' || p.class === 'fork') {
           mappedType = 'Knife / Sharp Object (Threat Level: CRITICAL)';
-        } else if (p.class === 'scissors' || p.class === 'spoon') {
-          mappedType = 'Sharp Object (Threat Level: HIGH)';
-        } else if (p.class === 'cell phone' || p.class === 'remote') {
+        } else if (p.class === 'scissors' || p.class === 'spoon' || p.class === 'toothbrush') {
+          mappedType = 'Small Sharp Object (Threat Level: HIGH)';
+        } else if (p.class === 'cell phone' || p.class === 'remote' || p.class === 'hair drier') {
           mappedType = 'Handgun (Threat Level: CRITICAL)';
+        } else if (p.class === 'baseball bat' || p.class === 'umbrella' || p.class === 'tennis racket') {
+          mappedType = 'Large Weapon / Machete (Threat Level: CRITICAL)';
         }
 
         const [x, y, w, h] = p.bbox;
