@@ -5,17 +5,32 @@
 const AI = (() => {
 
   // ── Claude API Caller ──────────────────────────────────────
+  // ── Default configurations for college demo ─────────────────
+  const DEFAULT_API_KEY = 'YOUR_OPENROUTER_API_KEY_HERE';
+  const DEFAULT_BASE_URL = 'https://openrouter.ai/api/v1'; // Change this if you have a custom base URL
+
+  // ── Claude API Caller ──────────────────────────────────────
   const callClaude = async (systemPrompt, userPrompt) => {
     let apiKey = (localStorage.getItem('anthropic-api-key') || '').trim().replace(/\.$/, '');
+    
+    // Fallback to default demo key if not configured in Settings
     if (!apiKey) {
-      throw new Error('No API key configured. Please add your API key in Settings.');
+      apiKey = DEFAULT_API_KEY;
     }
 
-    const isOpenRouter = apiKey.startsWith('sk-or-');
+    if (!apiKey || apiKey === 'YOUR_OPENROUTER_API_KEY_HERE') {
+      throw new Error('No API key configured. Please add your API key in Settings or configure the default key in ai-engine.js.');
+    }
+
+    const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey === DEFAULT_API_KEY;
 
     if (isOpenRouter) {
       try {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        const endpoint = DEFAULT_BASE_URL.endsWith('/') 
+          ? `${DEFAULT_BASE_URL}chat/completions` 
+          : `${DEFAULT_BASE_URL}/chat/completions`;
+
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${apiKey}`,
