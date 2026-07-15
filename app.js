@@ -2814,6 +2814,76 @@ document.addEventListener('DOMContentLoaded', () => {
     if (key) settingsInput.value = key;
   }
 
+  // ── Global AI Assistant Logic ──────────────────────────────
+  const initGlobalAI = () => {
+    const fab = document.getElementById('global-ai-fab');
+    const panel = document.getElementById('global-ai-panel');
+    const closeBtn = document.getElementById('global-ai-close');
+    const sendBtn = document.getElementById('global-ai-send');
+    const input = document.getElementById('global-ai-input');
+    const messages = document.getElementById('global-ai-messages');
+
+    if (!fab || !panel) return;
+
+    const togglePanel = () => {
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) {
+        input.focus();
+      }
+    };
+
+    fab.addEventListener('click', togglePanel);
+    closeBtn.addEventListener('click', togglePanel);
+
+    const appendMsg = (text, isUser) => {
+      const div = document.createElement('div');
+      div.className = `message ${isUser ? 'user' : 'ai'}`;
+      const avatar = document.createElement('div');
+      avatar.className = `msg-avatar ${isUser ? 'user' : 'ai'}`;
+      avatar.innerHTML = isUser 
+        ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+        : `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+      
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      // Format basic markdown safely
+      const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
+      bubble.innerHTML = formatted;
+
+      div.appendChild(avatar);
+      div.appendChild(bubble);
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+      return bubble;
+    };
+
+    const sendMessage = async () => {
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      
+      appendMsg(text, true);
+      const aiBubble = appendMsg('...', false);
+      
+      // Get active tab context
+      const activeTabBtn = document.querySelector('.nav-tab.active');
+      const currentContext = activeTabBtn ? activeTabBtn.querySelector('.tab-label').textContent : 'Unknown';
+
+      try {
+        if (!window.AI || !window.AI.getResponse) throw new Error('AI Engine not ready');
+        const response = await window.AI.getResponse(text, currentContext);
+        aiBubble.innerHTML = '';
+        window.AI.typeText(aiBubble, response, 10);
+      } catch (err) {
+        aiBubble.innerHTML = `<span style="color:var(--red-bright)">Error: ${err.message}</span>`;
+      }
+    };
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+  };
+
+  initGlobalAI();
   initParticles();
   initChat();
   initSOS();

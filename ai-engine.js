@@ -180,7 +180,7 @@ const AI = (() => {
   // ── GenAI Chat Assistant (Multilingual & Grounded) ────────
   let cachedFifaKnowledge = '';
 
-  const getResponse = async (input) => {
+  const getResponse = async (input, currentContext = '') => {
     if (!cachedFifaKnowledge) {
       try {
         const res = await fetch('fifa-knowledge.md');
@@ -201,6 +201,7 @@ const AI = (() => {
     - Weather: Temp ${weather.tempF}°F, Humidity ${weather.humidity}%, Heat Risk ${weather.risk}
     - Crowd Density: ${JSON.stringify(crowdZonesState)}
     - Active Security/Safety Incidents: ${JSON.stringify(incidents)}
+    ${currentContext ? `\n    IMPORTANT CONTEXT: The user is currently viewing the "${currentContext}" section of the app. Tailor your response and terminology specifically to this section. If it's Translator, provide direct translation. If it's Risk or Ops, be clinical and operational. If Eco, focus on sustainability.` : ''}
 
     FIFA World Cup 2026 Knowledge Base:
     ${cachedFifaKnowledge}

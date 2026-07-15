@@ -3529,3 +3529,151 @@ body.light-theme .chat-bg-orbit-icon {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* ============================================================
+   GLOBAL AI ASSISTANT (FAB + PANEL)
+   ============================================================ */
+
+#global-ai-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  color: #000;
+  border: none;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#global-ai-fab:hover {
+  transform: scale(1.1) translateY(-4px);
+}
+
+#global-ai-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100vh;
+  background: var(--bg-base);
+  border-left: 1px solid var(--glass-border);
+  box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+  z-index: 10001;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+#global-ai-panel.open {
+  right: 0;
+}
+
+#global-ai-panel .panel-header {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-elevated);
+}
+
+#global-ai-panel .panel-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--gold);
+}
+
+#global-ai-panel .close-btn {
+  background: none;
+  border: none;
+  color: var(--fg-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+#global-ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+#global-ai-input-area {
+  padding: var(--space-4);
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  gap: var(--space-2);
+  background: var(--bg-elevated);
+}
+
+@media (max-width: 768px) {
+  /* BOTTOM NAVIGATION BAR FOR MOBILE */
+  .nav-tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: var(--space-2) var(--space-3) !important;
+    z-index: 9999;
+    justify-content: flex-start !important;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    /* Ensure it overlays everything but stays below panels */
+  }
+
+  .nav-tab {
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 12px !important;
+    min-width: 64px;
+  }
+
+  .nav-tab .tab-label {
+    display: block !important;
+    font-size: 0.6rem !important;
+  }
+
+  /* Add bottom padding to main app so content isn't hidden behind the new bottom bar */
+  #app {
+    padding-bottom: 80px !important;
+  }
+  
+  /* Move FAB slightly up to not overlap bottom nav */
+  #global-ai-fab {
+    bottom: 90px;
+  }
+  
+  /* Slide panel from bottom instead of right on mobile */
+  #global-ai-panel {
+    width: 100%;
+    height: 80vh;
+    top: auto;
+    bottom: -100vh;
+    right: 0;
+    border-left: none;
+    border-top: 1px solid var(--glass-border);
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
+    transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #global-ai-panel.open {
+    bottom: 0;
+  }
+}
