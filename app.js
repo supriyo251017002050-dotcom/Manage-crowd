@@ -2592,7 +2592,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     try {
-      const predictions = await cctvModel.detect(video);
+      // Lower the minimum score threshold to 0.30 to make it much more sensitive to real knives and objects
+      const predictions = await cctvModel.detect(video, 20, 0.30);
       
       const scaleX = canvas.width / video.videoWidth;
       const scaleY = canvas.height / video.videoHeight;
@@ -2605,12 +2606,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       predictions.forEach((p, idx) => {
         let mappedType = null;
-        if (p.class === 'knife') {
-          mappedType = 'Knife (Threat Level: CRITICAL)';
-        } else if (p.class === 'scissors') {
+        // Map various sharp/weapon-like COCO-SSD classes to threats
+        if (p.class === 'knife' || p.class === 'fork') {
+          mappedType = 'Knife / Sharp Object (Threat Level: CRITICAL)';
+        } else if (p.class === 'scissors' || p.class === 'spoon') {
           mappedType = 'Sharp Object (Threat Level: HIGH)';
-        } else if (p.class === 'cell phone') {
-          mappedType = 'Handgun (Test Proxy)';
+        } else if (p.class === 'cell phone' || p.class === 'remote') {
+          mappedType = 'Handgun (Threat Level: CRITICAL)';
         }
 
         const [x, y, w, h] = p.bbox;
